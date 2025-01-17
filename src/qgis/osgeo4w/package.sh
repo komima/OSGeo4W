@@ -18,27 +18,35 @@ source ../../../scripts/build-helpers
 
 startlog
 
-# Get latest release branch
-RELBRANCH=$(git ls-remote --heads $REPO "refs/heads/release-*_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/heads/release-#release-#p' | sort -V | tail -1)
-RELBRANCH=${RELBRANCH#*/}
-
-RELTAG=$(git ls-remote --tags $REPO "refs/tags/final-${RELBRANCH#release-}_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/tags/final-#final-#p' | sort -V | tail -1)
-
+# qgis repo is checked out in action instead
 cd ..
-
-if [ -d qgis ]; then
-	cd qgis
-	git config core.filemode false
-
-	git fetch origin +refs/tags/$RELTAG:refs/tags/$RELTAG
-	git clean -f
-	git reset --hard
-
-	git checkout -f $RELTAG
-else
-	git clone $REPO --branch $RELTAG --single-branch --depth 1 qgis
-	cd qgis
+if ! [ -d qgis ]; then
+	echo QGIS REPO DOES NOT EXITS
+	exit 1
 fi
+cd qgis
+
+# Get latest release branch
+# RELBRANCH=$(git ls-remote --heads $REPO "refs/heads/release-*_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/heads/release-#release-#p' | sort -V | tail -1)
+# RELBRANCH=${RELBRANCH#*/}
+
+# RELTAG=$(git ls-remote --tags $REPO "refs/tags/final-${RELBRANCH#release-}_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/tags/final-#final-#p' | sort -V | tail -1)
+
+# cd ..
+
+# if [ -d qgis ]; then
+# 	cd qgis
+# 	git config core.filemode false
+
+# 	git fetch origin +refs/tags/$RELTAG:refs/tags/$RELTAG
+# 	git clean -f
+# 	git reset --hard
+
+# 	git checkout -f $RELTAG
+# else
+# 	git clone $REPO --branch $RELTAG --single-branch --depth 1 qgis
+# 	cd qgis
+# fi
 
 if [ -s ../osgeo4w/patch ]; then
 	git apply --allow-empty --check ../osgeo4w/patch
@@ -67,6 +75,9 @@ else
 fi
 
 nextbinary
+
+# customize build tag
+B=nls
 
 (
 	set -e

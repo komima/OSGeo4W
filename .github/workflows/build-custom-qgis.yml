@@ -1,0 +1,51 @@
+name: Build custom QGIS package
+
+on:
+  workflow_dispatch:
+    inputs:
+      qgisrepo:
+        description: QGIS git repo to build
+        required: true
+        default: https://github.com/qgis/QGIS.git
+      qgisref:
+        description: QGIS git repo ref to build (tag/branch/sha)
+        required: true
+        default: 'final-x_xx_x'
+      buildlike:
+        description: 'OSGeo4W build script to use'
+        required: true
+        type: choice
+        options: 
+          - qgis
+          - qgis-ltr
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.inputs.qgisrepo }}
+          ref: ${{ github.event.inputs.qgisref }}
+          path: src/${{ github.event.inputs.buildlike }}/qgis
+
+      - name: Build
+        shell: cmd
+        env:
+          OSGEO4W_REP: "dist"
+          OSGEO4W_SKIP_UPLOAD: "1"
+          OSGEO4W_BUILD_RDEPS: "0"
+          OSGEO4W_SKIP_TESTS: "1"
+          OSGEO4W_SKIP_CLEAN: "1"
+        run: |
+          mkdir %OSGEO4W_REP%
+          call bootstrap.cmd ${{ github.event.inputs.buildlike }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: dist/x86_64/
+          retention-days: 1

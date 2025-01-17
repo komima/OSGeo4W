@@ -177,14 +177,16 @@ declare -x fetchenv
 vs2019env() {
 	local e vcdir
 
+	# always use build tools only
+
 	vcdir=
-	for e in Community Professional Enterprise; do
-		d=$(cygpath "$PROGRAMFILES (x86)\\Microsoft Visual Studio\\2019\\$e")
-		if [ -d "$d" ]; then
-			vcdir=$d
-			break
-		fi
-	done
+	# for e in Community Professional Enterprise; do
+	# 	d=$(cygpath "$PROGRAMFILES (x86)\\Microsoft Visual Studio\\2019\\$e")
+	# 	if [ -d "$d" ]; then
+	# 		vcdir=$d
+	# 		break
+	# 	fi
+	# done
 
 	if [ -z "$vcdir" ]; then
 		vcdir=$OSGEO4W_SCRIPTS/vs2019
@@ -223,7 +225,8 @@ declare -x vs2019env
 fileversion() {
 	local ps="$(cygpath -a --sysdir)/WindowsPowerShell/v1.0/powershell.exe"
 	local v=$($ps -Command "(Get-Item \"$(cygpath -aw "$1")\").VersionInfo.ProductVersion")
-	v=${v%}
+	v=${v%
+}
 	echo $v
 }
 declare -x fileversion
@@ -231,14 +234,16 @@ declare -x fileversion
 vs2022env() {
 	local e vcdir
 
+	# always use build tools only
+
 	vcdir=
-	for e in Community Professional Enterprise; do
-		d=$(cygpath "$PROGRAMFILES\\Microsoft Visual Studio\\2022\\$e")
-		if [ -d "$d" ]; then
-			vcdir=$d
-			break
-		fi
-	done
+	# for e in Community Professional Enterprise; do
+	# 	d=$(cygpath "$PROGRAMFILES\\Microsoft Visual Studio\\2022\\$e")
+	# 	if [ -d "$d" ]; then
+	# 		vcdir=$d
+	# 		break
+	# 	fi
+	# done
 
 	if [ -z "$vcdir" ]; then
 		vcdir=$OSGEO4W_SCRIPTS/vs2022
