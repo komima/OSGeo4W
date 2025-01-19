@@ -19,6 +19,8 @@ if [ -z "$OSGEO4W_REP" ]; then
 		mkdir -p "$OSGEO4W_REP"
 		;;
 	esac
+else
+	export OSGEO4W_REP=$(realpath "$OSGEO4W_REP") # if explicitly given, make absolute
 fi
 
 : ${OSGEO4W_SKIP_UPLOAD:=1}

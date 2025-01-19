@@ -18,6 +18,17 @@ source ../../../scripts/build-helpers
 
 startlog
 
+# qgis repo is checked out in action instead
+cd ..
+if ! [ -d qgis ]; then
+	echo QGIS REPO DOES NOT EXITS
+	exit 1
+else
+	git config --global --add safe.directory $(cygpath -a qgis)
+fi
+cd qgis
+
+if false; then
 # Get latest release branch
 RELBRANCH=$(git ls-remote --heads $REPO "refs/heads/release-*_*" | sed -e '/\^{}$/d' -ne 's#^.*refs/heads/release-#release-#p' | sort -V | tail -1)
 LTRBRANCH=$(git ls-remote --tags $REPO | sed -e '/\^{}$/d' -ne 's#^.*refs/tags/ltr-#release-#p' | fgrep -vx $RELBRANCH | sort -V | tail -1)
@@ -37,6 +48,8 @@ if [ -d qgis ]; then
 else
 	git clone $REPO --branch $RELTAG --single-branch --depth 1 qgis
 	cd qgis
+fi
+
 fi
 
 if [ -s ../osgeo4w/patch ]; then
